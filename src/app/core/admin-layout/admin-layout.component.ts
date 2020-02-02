@@ -11,7 +11,7 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
 
   mobileQuery: MediaQueryList;
   // Store Side-Nav-Bar content list(Notes)
-  sideNavContent: Note[] = [ 
+  notes: Note[] = [ 
     {note_id: 1, user_id: 1, title: "TODO", note : "NOte1", created_on: "02/02/2020 07:12:00", modified_on: "02/02/2020 07:12:00"},
     {note_id: 2, user_id: 1, title: "TORead", note : "NOte2", created_on: "02/02/2020 07:12:00", modified_on: "02/02/2020 07:12:00"},
     {note_id: 3, user_id: 1, title: "Courses", note : "NOte3", created_on: "02/02/2020 07:12:00", modified_on: "02/02/2020 07:12:00"},
@@ -33,6 +33,11 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.mobileQuery.removeListener(this._mobileQueryListener);
+  }
+
+  viewSelectedNote(selectedNote: Note): void {
+    console.log("Selected Note: " , selectedNote);
+    this.noteContent = selectedNote;
   }
 
 }
