@@ -1,6 +1,6 @@
 export interface Note{
-    note_id: Number,
-    user_id: Number,
+    note_id: number,
+    user_id: number,
     title: string,
     note : string,
     created_on: string,

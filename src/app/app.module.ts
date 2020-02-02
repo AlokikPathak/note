@@ -6,6 +6,8 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AdminLayoutComponent } from './core/admin-layout/admin-layout.component';
 import { MaterialDesignModule } from './shared/modules/material-design/material-design.module';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+
 
 @NgModule({
   declarations: [
@@ -17,6 +19,8 @@ import { MaterialDesignModule } from './shared/modules/material-design/material-
     AppRoutingModule,
     BrowserAnimationsModule,
     MaterialDesignModule,
+    FormsModule,
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
