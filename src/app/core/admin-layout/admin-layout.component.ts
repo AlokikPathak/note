@@ -93,7 +93,6 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
    * Purpose: Set the Content
    */
   setNote(): void {
-    // update
     this.noteTitleFC.setValue(this.noteContent.title);
     this.noteFC.setValue(this.noteContent.note);
     this.noteContent.modified_on = this.currentTS;
