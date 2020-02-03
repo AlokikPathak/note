@@ -18,7 +18,7 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
   notes: Note[] = []
 
   // Store Content of selected Note item
-  noteContent: Note = {note_id: "0", user_id: 1, title: "", note : "", created_on: "",modified_on: ""};
+  noteContent: Note = {note_id: "", user_id: 1, title: "", note : "", created_on: "",modified_on: ""};
 
   noteTitleFC = new FormControl();
   noteFC = new FormControl();
@@ -67,17 +67,19 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     this.updateTimestamp();
     var response = "";
     // For New Note
-    if(this.noteContent.note_id === "0") {
-      console.log("Create new Note!")
+    if(this.noteContent.note_id === "") {
       var newNote: Note ={
         note_id : uuid.v4(),
         user_id : 1, 
-        title : this.noteContent.title,
-        note : this.noteContent.note,
+        title : String(this.noteTitleFC.value),
+        note : String(this.noteFC.value),
         created_on: this.currentTS,
-        modified_on: this.currentTS 
-      };
+        modified_on: this.currentTS,
+      }
+      console.log("Add New Note: ", newNote);
       response = this._notesService.addNote(newNote);
+      // update the active note
+      this.noteContent = newNote;
 
     } else {
       // update the notes list
@@ -89,7 +91,10 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
         created_on: this.noteContent.created_on,
         modified_on: this.currentTS,
       };
+      console.log("Updated Note: ", updatedNote);
       response = this._notesService.updateNote(updatedNote);
+      // update the active note
+      this.noteContent = updatedNote;
 
     }
     // update the notes array
@@ -126,6 +131,8 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     if(this.isActiveNote)
       var response = this._notesService.deleteNote(this.noteContent.note_id);
       console.log(response)
+    // Set Default Note
+    this.setDefaultNote();
   }
 
   /**
@@ -133,7 +140,7 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
    * @returns void
    */
   getNotes(): void {
-    this.toggelActiveNote();
+    //this.toggelActiveNote();
     console.log("Search Note...: "+ this.searchFC.value);
     this.notes = this._notesService.getNotes(this.searchFC.value);
   }
@@ -154,7 +161,14 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
    * @returns void
    */
   setDefaultNote(): void {
-    this.noteContent = {note_id: "0", user_id: 1, title: "", note : "", created_on: "",modified_on: ""};
+    this.updateTimestamp();
+    console.log("inside setDefault Note");
+    this.noteContent.note_id="";
+    this.noteContent.user_id=1;
+    this.noteFC.setValue("");
+    this.noteTitleFC.setValue("");
+    this.noteContent.created_on = this.currentTS;
+    this.noteContent.modified_on = "";
   }
 
 }

@@ -6,7 +6,7 @@ import { Note } from './../models/note-model';
 })
 export class NotesService {
 
-  private _notes: Note[];
+  private _notes: Note[] = new Array();
 
   constructor() {}
 
@@ -66,6 +66,10 @@ export class NotesService {
    * @returns string
    */
   addNote(newNote: Note): string {
+    this.fetchNotes();
+    console.log("Service add note: ", newNote);
+    if(this._notes === null)
+      this._notes = [];
     this._notes.push(newNote);
     this.updateNoteInLocalStorage(this._notes);
     return "Note Added!";

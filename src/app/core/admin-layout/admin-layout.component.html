@@ -33,7 +33,7 @@
       <mat-sidenav class="sidenav-bar" #snav [mode]="mobileQuery.matches ? 'over' : 'side'"
                    [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
         <mat-nav-list>
-          <a mat-list-item routerLink="." *ngFor="let note of notes; let i = index" (click)="viewSelectedNote(note, i)" >{{note.note_id}} {{note.title}}</a>
+          <a mat-list-item routerLink="." *ngFor="let note of notes; let i = index" (click)="viewSelectedNote(note, i)" >{{note.title}} {{note.note}}</a>
         </mat-nav-list>
       </mat-sidenav>
       
