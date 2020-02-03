@@ -5,11 +5,10 @@
       <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
       <h1 class="app-name">Note</h1>
 
-
       <div class="search-bar" fxFlex>
         <form class="search-form" [ngStyle.xs]="{display: 'none'}">
           <mat-icon>search</mat-icon>
-          <input type="text"  [formControl]="searchFC" (change)="searchNote()" placeholder="Search Note..." autofocus="true" />
+          <input type="text"  [formControl]="searchFC" (change)="getNotes()" placeholder="Search Note..." />
         </form>
       </div>
 
@@ -20,11 +19,7 @@
       <button (click)="deleteSelectedNote()"  matTooltip="Delete Note" mat-icon-button>
         <mat-icon>delete</mat-icon>
       </button>
-      
-      <!-- <button (click)="viewUserProfile()" matTooltip="Account Settings" mat-icon-button>
-        <mat-icon>settings</mat-icon>
-      </button> -->
-
+  
     </mat-toolbar>
   
     <!-- Sidenav  -->

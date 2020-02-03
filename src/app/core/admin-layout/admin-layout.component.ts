@@ -143,6 +143,9 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     //this.toggelActiveNote();
     console.log("Search Note...: "+ this.searchFC.value);
     this.notes = this._notesService.getNotes(this.searchFC.value);
+    // Set the Note as default if search performed
+    if(this.searchFC.value)
+      this.setDefaultNote();
   }
 
   /**

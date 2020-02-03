@@ -26,7 +26,7 @@ export class NotesService {
   getNotes(searchKey: string): Note[] {
     this.fetchNotes();
     // Deep-search throughout the list
-    if(searchKey!=="") {
+    if(searchKey) {
       let matchedNotes = [];
       this._notes.forEach( note =>{
         var regx = new RegExp(searchKey, "gi");
