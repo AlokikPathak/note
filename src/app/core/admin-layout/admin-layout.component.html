@@ -5,13 +5,6 @@
       <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
       <h1 class="app-name">Note</h1>
 
-      <!-- <div class="search-bar" fxFlex>
-        <form class="search-form" [ngStyle.xs]="{display: 'none'}">
-          <mat-icon>search</mat-icon>
-          <input type="text"  [formControl]="searchFC" (change)="getNotes()" placeholder="Search Note..." />
-        </form>
-      </div> -->
-
       <button (click)="addNote()"  matTooltip="Take a Note..." mat-icon-button>
         <mat-icon>add</mat-icon>
       </button>
@@ -25,14 +18,6 @@
         <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search Note...">
         <!-- <mat-icon class="filter-icon" matSuffix>search</mat-icon> -->
       </mat-form-field>
-      
-      <!--
-      <mat-form-field class='filter-field' appearance="outline" floatLabel="never">
-        <!-- <mat-label>Outline form field</mat-label>
-        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search Note...">
-        <mat-icon matSuffix>search</mat-icon>
-      </mat-form-field>
-    -->
   
     </mat-toolbar>
   
