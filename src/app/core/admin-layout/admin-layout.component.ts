@@ -22,10 +22,11 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
 
   noteTitleFC = new FormControl();
   noteFC = new FormControl();
-  searchFC = new FormControl();
+  // searchFC = new FormControl();
   currentTS: string;
   activeNoteIndex: number = 0;
   isActiveNote: boolean = false;
+  searchKey="";
   private _mobileQueryListener: () => void;
 
   constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private _notesService: NotesService) {
@@ -141,10 +142,10 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
    */
   getNotes(): void {
     //this.toggelActiveNote();
-    console.log("Search Note...: "+ this.searchFC.value);
-    this.notes = this._notesService.getNotes(this.searchFC.value);
+    console.log("Search Note...: ");
+    this.notes = this._notesService.getNotes(this.searchKey);
     // Set the Note as default if search performed
-    if(this.searchFC.value)
+    if(this.searchKey)
       this.setDefaultNote();
   }
 
@@ -172,6 +173,12 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     this.noteTitleFC.setValue("");
     this.noteContent.created_on = this.currentTS;
     this.noteContent.modified_on = "";
+  }
+
+  applyFilter(event): void{
+    console.log(event);
+    this.searchKey = event;
+    this.getNotes(); 
   }
 
 }

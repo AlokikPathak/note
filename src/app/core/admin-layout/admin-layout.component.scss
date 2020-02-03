@@ -19,7 +19,7 @@
   }
   
   .sidenav-bar {
-    width: 25%;
+    width: 30%;
   }
 
   .sidenav-container {
@@ -39,9 +39,33 @@
   }
 
   .note-title {
-    font-size: 25px;
+    font-size: 24px;
+  }
+
+  .note-content {
+    font-size: 16px;
   }
 
   .search-bar {
     flex: 1 1 auto !important;
+  }
+
+  .filter-field{
+    flex: 1 1 auto !important;
+    margin-left :8px;
+    margin-right: 8px;
+    padding-top: 4px;
+  }
+  
+  .filter-icon{
+    margin-left: 8px;
+    padding-top: 4px;
+  }
+
+  // ::ng-deep .mat-form-field-underline {
+  //   display: none;
+  // }
+
+  .mat-icon-button {
+    margin-left: 10px;
   }
