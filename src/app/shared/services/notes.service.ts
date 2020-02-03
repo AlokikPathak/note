@@ -30,7 +30,7 @@ export class NotesService {
       let matchedNotes = [];
       this._notes.forEach( note =>{
         var regx = new RegExp(searchKey, "gi");
-        if(regx.test(note.title) || regx.test(note.note)) {
+        if(regx.test(note.title) || regx.test(note.note) || regx.test(note.created_on) || regx.test(note.modified_on)) {
           matchedNotes.push(note);
         }
       });
@@ -47,14 +47,15 @@ export class NotesService {
    * Purpose: Deletes a specific Note from Notes list
    * @param noteIndex: number
    */
-  deleteNote(note_id: number): string {
+  deleteNote(note_id: string): string {
     console.log("Array Before delete: ", this._notes);
     let updatedNotes = [];
     this._notes.forEach( (note, index) => {
-       if( note.note_id === note_id) {
+       if( note.note_id == note_id) {
          updatedNotes = this._notes.splice(index, 1);
        }
     });
+    this.updateNoteInLocalStorage(updatedNotes);
     console.log("Array after delete: ", updatedNotes);
     return "Note Deleted!";
   }
@@ -92,4 +93,8 @@ export class NotesService {
     localStorage.setItem("Notes", JSON.stringify(updatedNotes));
   }
 
+
+  updateLocalNotes(notes: Note[]) {
+    this.updateNoteInLocalStorage(notes);
+  }
 }

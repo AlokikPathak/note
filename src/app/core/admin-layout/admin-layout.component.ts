@@ -2,6 +2,9 @@ import {MediaMatcher} from '@angular/cdk/layout';
 import {ChangeDetectorRef, Component, OnInit, OnDestroy} from '@angular/core';
 import {Note} from './../../shared/models/note-model';
 import { FormControl } from '@angular/forms';
+import {NotesService} from './../../shared/services/notes.service';
+import * as uuid from 'uuid';
+
 
 @Component({
   selector: 'app-admin-layout',
@@ -12,35 +15,29 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
 
   mobileQuery: MediaQueryList;
   // Store Side-Nav-Bar content list(Notes)
-  notes: Note[] = [ 
-    {note_id: 1, user_id: 1, title: "TODO", note : "NOte1", created_on: "02/02/2020 07:12:00", modified_on: "02/02/2020 07:12:00"},
-    {note_id: 2, user_id: 1, title: "TORead", note : "Note....2", created_on: "02/02/2020 07:12:00", modified_on: "02/02/2020 07:12:00"},
-    {note_id: 3, user_id: 1, title: "Courses", note : "Note....3", created_on: "02/02/2020 07:12:00", modified_on: "02/02/2020 07:12:00"},
-    {note_id: 4, user_id: 1, title: "TODO 4", note : "Note....4", created_on: "02/02/2020 07:12:00", modified_on: "02/02/2020 07:12:00"},
-    {note_id: 5, user_id: 1, title: "TORead 5", note : "NOte....5", created_on: "02/02/2020 07:12:00", modified_on: "02/02/2020 07:12:00"},
-    {note_id: 6, user_id: 1, title: "Courses 6", note : "Note....6", created_on: "02/02/2020 07:12:00", modified_on: "02/02/2020 07:12:00"},
-    {note_id: 7, user_id: 1, title: "TODO 7", note : "Note......7", created_on: "02/02/2020 07:12:00", modified_on: "02/02/2020 07:12:00"},
-    {note_id: 8, user_id: 1, title: "TORead 8", note : "NOte.....8", created_on: "02/02/2020 07:12:00", modified_on: "02/02/2020 07:12:00"},
-    {note_id: 9, user_id: 1, title: "Courses 9", note : "NOte.....9", created_on: "02/02/2020 07:12:00", modified_on: "02/02/2020 07:12:00"},
-  ];
+  notes: Note[] = []
 
   // Store Content of selected Note item
-  noteContent: Note = 
-    {note_id: 1, user_id: 1, title: "TODO", note : "Default active note...", created_on: "02/02/2020 07:12:00",modified_on: "02/02/2020 07:12:00"};
+  noteContent: Note = {note_id: "0", user_id: 1, title: "", note : "", created_on: "",modified_on: ""};
 
   noteTitleFC = new FormControl();
   noteFC = new FormControl();
+  searchFC = new FormControl();
   currentTS: string;
   activeNoteIndex: number = 0;
+  isActiveNote: boolean = false;
   private _mobileQueryListener: () => void;
 
-  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
+  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private _notesService: NotesService) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // this._notesService.updateLocalNotes(this.notes);
+    this.notes = this._notesService.getNotes("");
+  }
 
   ngOnDestroy(): void {
     this.mobileQuery.removeListener(this._mobileQueryListener);
@@ -58,6 +55,7 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     this.noteTitleFC.setValue(this.noteContent.title);
     this.noteFC.setValue(this.noteContent.note); 
     this.activeNoteIndex = index;
+    this.isActiveNote = true;
   }
 
   /**
@@ -67,17 +65,38 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
   onNoteChange(): void {
     console.log("Note Title: "+this.noteTitleFC.value+ "; Note: "+ this.noteFC.value);
     this.updateTimestamp();
-    // update the notes list
-    var updatedNote: Note = {
-      note_id: this.noteContent.note_id, 
-      user_id: this.noteContent.user_id ,
-      title: this.noteTitleFC.value, 
-      note : this.noteFC.value, 
-      created_on: this.noteContent.created_on,
-      modified_on: this.currentTS,
-    };
+    var response = "";
+    // For New Note
+    if(this.noteContent.note_id === "0") {
+      console.log("Create new Note!")
+      var newNote: Note ={
+        note_id : uuid.v4(),
+        user_id : 1, 
+        title : this.noteContent.title,
+        note : this.noteContent.note,
+        created_on: this.currentTS,
+        modified_on: this.currentTS 
+      };
+      response = this._notesService.addNote(newNote);
+
+    } else {
+      // update the notes list
+      var updatedNote: Note = {
+        note_id: this.noteContent.note_id, 
+        user_id: this.noteContent.user_id,
+        title: this.noteTitleFC.value, 
+        note : this.noteFC.value, 
+        created_on: this.noteContent.created_on,
+        modified_on: this.currentTS,
+      };
+      response = this._notesService.updateNote(updatedNote);
+
+    }
     // update the notes array
-    this.notes[this.activeNoteIndex] = updatedNote;
+    // this.notes[this.activeNoteIndex] = updatedNote;
+    // update notes list
+    this.getNotes();
+    console.log(response);
 
   }
 
@@ -90,15 +109,52 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Purpose: Set the Content
+   * Purpose: Set the note editor to default to add new note
+   * 
    */
-  setNote(): void {
-    this.noteTitleFC.setValue(this.noteContent.title);
-    this.noteFC.setValue(this.noteContent.note);
-    this.noteContent.modified_on = this.currentTS;
-    console.log("Note set as: ", this.noteContent);
+  addNote(): void {
+    console.log("Add note clicked!");
+    this.setDefaultNote();
   }
 
+  /**
+   * Purpose: Delete active Note
+   * @returns void
+   */
+  deleteSelectedNote(): void {
+    console.log("Delete note_id: "+ this.noteContent.note_id);
+    if(this.isActiveNote)
+      var response = this._notesService.deleteNote(this.noteContent.note_id);
+      console.log(response)
+  }
 
+  /**
+   * Purpose: Get Notes List & performs deep search throughout the Notes, stores the foundset to sidenave notes list
+   * @returns void
+   */
+  getNotes(): void {
+    this.toggelActiveNote();
+    console.log("Search Note...: "+ this.searchFC.value);
+    this.notes = this._notesService.getNotes(this.searchFC.value);
+  }
+
+  /**
+   * Purpose: Toggles the Active Note State, while searching/deleting etc.
+   * @returns void
+   */
+  toggelActiveNote(): void {
+    this.isActiveNote!=this.isActiveNote;
+    // If none of the Note is active
+    if(!this.isActiveNote)
+      this.setDefaultNote();
+  }
+
+  /**
+   * Purpose: To set the empty default Note
+   * @returns void
+   */
+  setDefaultNote(): void {
+    this.noteContent = {note_id: "0", user_id: 1, title: "", note : "", created_on: "",modified_on: ""};
+  }
 
 }
