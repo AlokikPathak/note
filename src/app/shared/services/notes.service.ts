@@ -26,7 +26,7 @@ export class NotesService {
   getNotes(searchKey: string): Note[] {
     this.fetchNotes();
     // Deep-search throughout the list
-    if(searchKey) {
+    if(searchKey!=="") {
       let matchedNotes = [];
       this._notes.forEach( note =>{
         var regx = new RegExp(searchKey, "gi");
@@ -49,6 +49,14 @@ export class NotesService {
    */
   deleteNote(note_id: string): string {
     console.log("Array Before delete: ", this._notes);
+    // For last element deletion
+    if(this._notes.length ===1 && this._notes[0].note_id === note_id) {
+      this._notes.pop();
+      console.log("Array after last item delete: ", this._notes);
+      this.updateNoteInLocalStorage(this._notes);
+      return "Last Note Deleted!";
+    }
+
     let updatedNotes = [];
     this._notes.forEach( (note, index) => {
        if( note.note_id == note_id) {
